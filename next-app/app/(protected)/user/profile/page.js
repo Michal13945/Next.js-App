@@ -1,21 +1,51 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { updateProfile } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/AuthContext";
 import LogoutForm from "../signout/logout";
+import { db } from "@/lib/firebase";
+import { doc, setDoc, getDoc } from "firebase/firestore";
 
 export default function ProfileForm() {
   const { user } = useAuth();
   const [error, setError] = useState("");
+  const router = useRouter();
+
   const [formData, setFormData] = useState({
     displayName: user?.displayName || "",
     email: user?.email || "",
     photoURL: user?.photoURL || "",
+    city: "",
+    street: "",
+    zipCode: "",
   });
 
-  const router = useRouter();
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (user) {
+        try {
+          const docRef = doc(db, "users", user.uid);
+          const docSnap = await getDoc(docRef);
+
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+            setFormData((prevData) => ({
+              ...prevData,
+              city: data.address?.city || "",
+              street: data.address?.street || "",
+              zipCode: data.address?.zipCode || "",
+            }));
+          }
+        } catch (err) {
+          console.error("Error fetching user data:", err);
+        }
+      }
+    };
+
+    fetchUserData();
+  }, [user]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -25,21 +55,35 @@ export default function ProfileForm() {
     }));
   };
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
 
-    updateProfile(user, {
-      displayName: formData.displayName,
-      photoURL: formData.photoURL,
-    })
-      .then(() => {
-        console.log("Profile updated");
-        router.push("/user/profileView");
-      })
-      .catch((error) => {
-        setError(error.message);
-        console.error("Error updating profile:", error);
+    try {
+      // Aktualizacja danych profilu użytkownika w Firebase Auth
+      await updateProfile(user, {
+        displayName: formData.displayName,
+        photoURL: formData.photoURL,
       });
+
+      // Aktualizacja danych adresu w Firestore
+      await setDoc(
+        doc(db, "users", user.uid),
+        {
+          address: {
+            city: formData.city,
+            street: formData.street,
+            zipCode: formData.zipCode,
+          },
+        },
+        { merge: true }
+      );
+
+      console.log("Profile updated");
+      router.push("/user/profileView");
+    } catch (error) {
+      setError("Failed to update profile. Please try again.");
+      console.error("Error updating profile:", error);
+    }
   };
 
   return (
@@ -50,7 +94,6 @@ export default function ProfileForm() {
       >
         <h2 className="text-lg font-medium text-center">Profile</h2>
 
-        {/* Warunkowy alert o błędzie */}
         {error && (
           <div className="bg-red-500 text-white p-4 rounded-md mb-4">
             <strong>Error:</strong> {error}
@@ -90,6 +133,60 @@ export default function ProfileForm() {
             type="email"
             value={formData.email}
             readOnly
+            className="mt-1 w-full p-2 border rounded-md focus:outline-none focus:ring focus:ring-violet-500"
+          />
+        </div>
+
+        {/* City Field */}
+        <div>
+          <label
+            htmlFor="city"
+            className="block text-sm font-medium text-gray-700"
+          >
+            City
+          </label>
+          <input
+            id="city"
+            name="city"
+            type="text"
+            value={formData.city}
+            onChange={handleChange}
+            className="mt-1 w-full p-2 border rounded-md focus:outline-none focus:ring focus:ring-violet-500"
+          />
+        </div>
+
+        {/* Street Field */}
+        <div>
+          <label
+            htmlFor="street"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Street
+          </label>
+          <input
+            id="street"
+            name="street"
+            type="text"
+            value={formData.street}
+            onChange={handleChange}
+            className="mt-1 w-full p-2 border rounded-md focus:outline-none focus:ring focus:ring-violet-500"
+          />
+        </div>
+
+        {/* Zip Code Field */}
+        <div>
+          <label
+            htmlFor="zipCode"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Zip Code
+          </label>
+          <input
+            id="zipCode"
+            name="zipCode"
+            type="text"
+            value={formData.zipCode}
+            onChange={handleChange}
             className="mt-1 w-full p-2 border rounded-md focus:outline-none focus:ring focus:ring-violet-500"
           />
         </div>

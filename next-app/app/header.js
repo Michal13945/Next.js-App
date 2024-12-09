@@ -1,8 +1,10 @@
 import { VscAccount } from "react-icons/vsc";
 import { AiFillHome } from "react-icons/ai";
-import { VscCodeOss } from "react-icons/vsc";
-
+import { FaSignInAlt } from "react-icons/fa";
+import { FaAddressCard } from "react-icons/fa";
+import { FaWeixin } from "react-icons/fa";
 import Link from "next/link";
+import Articles from "./(protected)/user/articlesView/page";
 
 export function NavBar() {
   return (
@@ -48,7 +50,7 @@ export function NavBar() {
                 href="/user/register"
                 className="flex items-center px-4 py-2 rounded hover:bg-gray-200"
               >
-                <VscCodeOss /> <span className="ml-1">Register</span>
+                <FaSignInAlt /> <span className="ml-1">Register</span>
               </Link>
             </div>
             <div>
@@ -56,7 +58,15 @@ export function NavBar() {
                 href="/user/profile"
                 className="flex items-center px-4 py-2 rounded hover:bg-gray-200"
               >
-                <VscCodeOss /> <span className="ml-1">Profile</span>
+                <FaAddressCard /> <span className="ml-1">Profile</span>
+              </Link>
+            </div>
+            <div>
+              <Link
+                href="/user/articlesView"
+                className="flex items-center px-4 py-2 rounded hover:bg-gray-200"
+              >
+                <FaWeixin /> <span className="ml-1">Articles</span>
               </Link>
             </div>
           </nav>
