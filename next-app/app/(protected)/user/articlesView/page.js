@@ -16,14 +16,11 @@ export default function Articles() {
       if (!user) return;
 
       try {
-        // Tworzenie referencji do kolekcji "articles"
         const articlesRef = collection(db, "articles");
         const userCheck = doc(db, "users", user.uid);
-        // Dodawanie filtra za pomocą `query` i `where`
         const q = query(articlesRef, where("user", "==", userCheck));
         const snapshot = await getDocs(q);
 
-        // Przetwarzanie wyników
         const fetchedArticles = snapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),

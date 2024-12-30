@@ -2,10 +2,12 @@ import Link from "next/link";
 export function NotFound() {
   return (
     <>
-      <h1>This page don't exist</h1>
-      <Link href="/">
+      <h2>
+        <b>You must be logged in</b>
+      </h2>
+      <Link href="/user/signin">
         <button className="btn btn-outline btn-primary">
-          Return to home page
+          Click here, to sign in
         </button>
       </Link>
     </>

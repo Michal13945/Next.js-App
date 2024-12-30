@@ -4,70 +4,122 @@ import { useAuth } from "@/lib/AuthContext";
 import { useState, useEffect } from "react";
 import { db } from "@/lib/firebase";
 import { doc, getDoc } from "firebase/firestore";
+import { useRouter } from "next/navigation";
+import LogoutForm from "../signout/logout";
 
 export default function ProfileView() {
   const { user } = useAuth();
-  const [address, setAddress] = useState("");
+  const [address, setAddress] = useState({
+    city: "",
+    street: "",
+    zipCode: "",
+  });
+
+  const router = useRouter();
 
   useEffect(() => {
     const fetchAddress = async () => {
-      if (user) {
-        const snapshot = await getDoc(doc(db, "users", user.uid));
-        const addressData = snapshot.data().address;
-        setAddress({
-          city: addressData.city,
-          street: addressData.street,
-          zipCode: addressData.zipCode,
-        });
+      try {
+        if (user) {
+          const snapshot = await getDoc(doc(db, "users", user.uid));
+          if (snapshot.exists()) {
+            const addressData = snapshot.data().address || {};
+            setAddress({
+              city: addressData.city || "No display city",
+              street: addressData.street || "No display street",
+              zipCode: addressData.zipCode || "No display zipCode",
+            });
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch user address:", error);
       }
     };
     fetchAddress();
-  });
+  }, [user]);
+
+  const EditProfile = () => {
+    router.push("/user/profile");
+  };
 
   return (
-    <section className="p-6 bg-gray-100 text-gray-900 flex items-center justify-center min-h-screen">
-      <div className="w-full max-w-md p-6 bg-white rounded-md shadow-md space-y-6">
-        <h2 className="text-lg font-medium text-center">Your Profile</h2>
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Display Name
-          </label>
-          <p className="mt-1">{user.displayName || "No display name"}</p>
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Email
-          </label>
-          <p className="mt-1">{user.email}</p>
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            City
-          </label>
-          <p className="mt-1">{address.city || "No display city"}</p>
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Street
-          </label>
-          <p className="mt-1">{address.street || "No display street"}</p>
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Zip Code
-          </label>
-          <p className="mt-1">{address.zipCode || "No display zipCode"}</p>
-        </div>
-        <div className="grid place-items-center">
-          {user.photoURL ? (
+    <section className="bg-gray-100 text-gray-900 flex items-center justify-center min-h-5">
+      <div className="w-full max-w-lg p-8 bg-white rounded-lg shadow-lg space-y-6">
+        <h2 className="text-2xl font-bold text-center text-gray-800">
+          Your Profile
+        </h2>
+
+        {/* Profile Picture */}
+        <div className="flex justify-center">
+          {user?.photoURL ? (
             <img
               src={user.photoURL}
               alt="Profile"
-              className="w-40 h-35 rounded-full ring-2 ring-offset-4 ring-violet-800"
+              className="rounded-full ring-4 ring-offset-4 ring-violet-600"
+              width={120}
+              height={120}
             />
           ) : (
             <div className="w-32 h-32 rounded-full bg-gray-300"></div>
           )}
+        </div>
+
+        {/* User Information */}
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Display Name
+            </label>
+            <p className="mt-1 text-lg">
+              {user?.displayName || "No display name"}
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Email
+            </label>
+            <p className="mt-1 text-lg">
+              {user?.email || "No email available"}
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              City
+            </label>
+            <p className="mt-1 text-lg">{address.city}</p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Street
+            </label>
+            <p className="mt-1 text-lg">{address.street}</p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Zip Code
+            </label>
+            <p className="mt-1 text-lg">{address.zipCode}</p>
+          </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="space-y-4">
+          <div>
+            <button
+              className="w-full px-8 py-3 text-sm font-semibold text-white bg-violet-600 rounded-md hover:bg-violet-700"
+              onClick={EditProfile}
+            >
+              Edit Profile
+            </button>
+          </div>
+          {/*className="w-full px-8 py-3 text-sm font-semibold text-violet-600 border border-violet-600 rounded-md hover:bg-violet-100" */}
+          <div className="items-center pt-2">
+            <LogoutForm />
+          </div>
         </div>
       </div>
     </section>

@@ -42,7 +42,7 @@ export function NavBar() {
                 href="/user/signin"
                 className="flex items-center px-4 py-2 rounded hover:bg-gray-200"
               >
-                <AiFillHome /> <span className="ml-1">Login</span>
+                <AiFillHome /> <span className="ml-1">Sign in</span>
               </Link>
             </div>
             <div>
@@ -55,7 +55,7 @@ export function NavBar() {
             </div>
             <div>
               <Link
-                href="/user/profile"
+                href="/user/profileView"
                 className="flex items-center px-4 py-2 rounded hover:bg-gray-200"
               >
                 <FaAddressCard /> <span className="ml-1">Profile</span>

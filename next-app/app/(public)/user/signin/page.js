@@ -1,4 +1,6 @@
 "use client";
+
+import React, { useState } from "react";
 import {
   signInWithEmailAndPassword,
   setPersistence,
@@ -6,15 +8,13 @@ import {
 } from "firebase/auth";
 import { getAuth } from "firebase/auth";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useState } from "react";
-import "../../../globals.css";
 
-function LoginLayout() {
+function LoginPage() {
   const auth = getAuth();
   const params = useSearchParams();
   const router = useRouter();
-  const returnUrl = params.get("returnUrl");
-  const [errorMessage, setErrorMessage] = useState(null); // Dodano obsługę błędów
+  const returnUrl = params?.get("returnUrl");
+  const [errorMessage, setErrorMessage] = useState(null);
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -27,30 +27,26 @@ function LoginLayout() {
           .then((userCredential) => {
             const user = userCredential.user;
 
-            // Sprawdzamy, czy użytkownik zweryfikował swój email
             if (!user.emailVerified) {
-              // Jeśli email nie jest zweryfikowany, przekierowujemy na stronę weryfikacji
               router.push("/user/verify");
-              return; // Zapobiegamy dalszemu działaniu
+              return;
             }
 
-            // Jeśli email jest zweryfikowany, przekierowujemy użytkownika na stronę docelową
             if (
               !returnUrl ||
               typeof returnUrl !== "string" ||
               returnUrl.trim() === ""
             ) {
-              router.push("/user/profile");
+              router.push("/user/profileView");
             } else {
-              router.push(returnUrl); // Przekierowanie na returnUrl
+              router.push(returnUrl);
             }
           })
           .catch((error) => {
-            // Wyświetlanie błędu w formularzu zamiast konsoli
             setErrorMessage(error.message);
           });
       })
-      .catch((error) => {
+      .catch(() => {
         setErrorMessage("An unexpected error occurred. Please try again.");
       });
   };
@@ -62,7 +58,6 @@ function LoginLayout() {
         <p className="text-sm text-gray-600">Sign in to access your account</p>
       </div>
 
-      {/* Alert dla błędów */}
       {errorMessage && (
         <div className="alert alert-error">
           <svg
@@ -128,7 +123,7 @@ function LoginLayout() {
             </button>
           </div>
           <p className="px-6 text-sm text-center text-gray-600">
-            Don't have an account yet?
+            Don&apos;t have an account yet?{" "}
             <a
               rel="noopener noreferrer"
               href="#"
@@ -144,4 +139,10 @@ function LoginLayout() {
   );
 }
 
-export default LoginLayout;
+export default function LoginPageWrapper() {
+  return (
+    <React.Suspense fallback={<div>Loading...</div>}>
+      <LoginPage />
+    </React.Suspense>
+  );
+}

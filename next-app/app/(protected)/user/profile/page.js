@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { updateProfile } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/AuthContext";
-import LogoutForm from "../signout/logout";
 import { db } from "@/lib/firebase";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 
@@ -59,13 +58,11 @@ export default function ProfileForm() {
     e.preventDefault();
 
     try {
-      // Aktualizacja danych profilu użytkownika w Firebase Auth
       await updateProfile(user, {
         displayName: formData.displayName,
         photoURL: formData.photoURL,
       });
 
-      // Aktualizacja danych adresu w Firestore
       await setDoc(
         doc(db, "users", user.uid),
         {
@@ -87,7 +84,7 @@ export default function ProfileForm() {
   };
 
   return (
-    <section className="p-6 bg-gray-100 text-gray-900 flex items-center justify-center min-h-screen flex-col">
+    <section className="p-6 bg-gray-100 text-gray-900 flex items-center justify-center min-h-10 flex-col">
       <form
         onSubmit={onSubmit}
         className="w-full max-w-md p-6 bg-white rounded-md shadow-md space-y-6"
@@ -219,9 +216,6 @@ export default function ProfileForm() {
           </button>
         </div>
       </form>
-      <div className="items-center pt-2">
-        <LogoutForm />
-      </div>
     </section>
   );
 }

@@ -16,10 +16,13 @@ export default function LogoutForm() {
   };
 
   return (
-    <form onSubmit={onSubmit}>
+    <form
+      onSubmit={onSubmit}
+      className="bg-white rounded-lg flex items-center justify-center"
+    >
       <button
         type="submit"
-        className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+        className="px-6 py-3 bg-red-500 text-white rounded hover:bg-red-600"
       >
         Wyloguj
       </button>
