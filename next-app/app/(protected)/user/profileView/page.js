@@ -49,7 +49,6 @@ export default function ProfileView() {
           Your Profile
         </h2>
 
-        {/* Profile Picture */}
         <div className="flex justify-center">
           {user?.photoURL ? (
             <img
@@ -64,7 +63,6 @@ export default function ProfileView() {
           )}
         </div>
 
-        {/* User Information */}
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700">
@@ -106,7 +104,6 @@ export default function ProfileView() {
           </div>
         </div>
 
-        {/* Action Buttons */}
         <div className="space-y-4">
           <div>
             <button
@@ -116,7 +113,6 @@ export default function ProfileView() {
               Edit Profile
             </button>
           </div>
-          {/*className="w-full px-8 py-3 text-sm font-semibold text-violet-600 border border-violet-600 rounded-md hover:bg-violet-100" */}
           <div className="items-center pt-2">
             <LogoutForm />
           </div>

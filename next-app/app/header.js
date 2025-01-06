@@ -4,7 +4,7 @@ import { FaSignInAlt } from "react-icons/fa";
 import { FaAddressCard } from "react-icons/fa";
 import { FaWeixin } from "react-icons/fa";
 import Link from "next/link";
-import Articles from "./(protected)/user/articlesView/page";
+import { FaCalendarAlt } from "react-icons/fa";
 
 export function NavBar() {
   return (
@@ -67,6 +67,14 @@ export function NavBar() {
                 className="flex items-center px-4 py-2 rounded hover:bg-gray-200"
               >
                 <FaWeixin /> <span className="ml-1">Articles</span>
+              </Link>
+            </div>
+            <div>
+              <Link
+                href="/user/calendar"
+                className="flex items-center px-4 py-2 rounded hover:bg-gray-200"
+              >
+                <FaCalendarAlt /> <span className="ml-1">Calendar</span>
               </Link>
             </div>
           </nav>

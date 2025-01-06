@@ -97,7 +97,6 @@ export default function ProfileForm() {
           </div>
         )}
 
-        {/* Display Name Field */}
         <div>
           <label
             htmlFor="displayName"
@@ -116,7 +115,6 @@ export default function ProfileForm() {
           />
         </div>
 
-        {/* Email Field */}
         <div>
           <label
             htmlFor="email"
@@ -134,7 +132,6 @@ export default function ProfileForm() {
           />
         </div>
 
-        {/* City Field */}
         <div>
           <label
             htmlFor="city"
@@ -152,7 +149,6 @@ export default function ProfileForm() {
           />
         </div>
 
-        {/* Street Field */}
         <div>
           <label
             htmlFor="street"
@@ -170,7 +166,6 @@ export default function ProfileForm() {
           />
         </div>
 
-        {/* Zip Code Field */}
         <div>
           <label
             htmlFor="zipCode"
@@ -188,7 +183,6 @@ export default function ProfileForm() {
           />
         </div>
 
-        {/* Photo URL Field */}
         <div>
           <label
             htmlFor="photoURL"
@@ -206,7 +200,6 @@ export default function ProfileForm() {
           />
         </div>
 
-        {/* Submit Button */}
         <div>
           <button
             type="submit"
